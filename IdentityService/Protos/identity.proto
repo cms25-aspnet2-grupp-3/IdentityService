@@ -1,0 +1,155 @@
+syntax = "proto3";
+
+option csharp_namespace = "IdentityService.Protos";
+
+package identity;
+
+service IdentityGrpcService {
+
+  // ── Auth-Api calls these (matches teammate's proto exactly) ───────
+
+  // Check if a user exists and if their email is confirmed
+  rpc CheckEmailConfirmStatus (CheckEmailConfirmStatusRequest) returns (CheckEmailConfirmStatusReply);
+
+  // Mark a user's email as confirmed or unconfirmed
+  rpc ChangeEmailConfirmStatus (ChangeEmailConfirmStatusRequest) returns (ChangeEmailConfirmStatusReply);
+
+  // Login — validate email + password
+  rpc Authenticate (AuthenticateRequest) returns (AuthenticateReply);
+
+  // Register a new user (email + password only)
+  rpc SignUp (SignUpRequest) returns (SignUpReply);
+
+  // Get the roles assigned to a user
+  rpc GetRoles (GetRolesRequest) returns (GetRolesReply);
+
+  // ── Profile-Api calls these ────────────────────────────────────────
+
+  // Get full user profile by ID
+  rpc GetUser (GetUserRequest) returns (GetUserReply);
+
+  // Update user profile fields
+  rpc UpdateUser (UpdateUserRequest) returns (UpdateUserReply);
+
+  // Delete a user account
+  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply);
+}
+
+// ── CheckEmailConfirmStatus ────────────────────────────────────────
+message CheckEmailConfirmStatusRequest {
+  string email = 1;
+}
+
+message CheckEmailConfirmStatusReply {
+  bool succeeded = 1;
+  bool exists = 2;
+  bool email_confirmed = 3;
+  string email = 4;
+  string user_id = 5;
+}
+
+// ── ChangeEmailConfirmStatus ───────────────────────────────────────
+message ChangeEmailConfirmStatusRequest {
+  string email = 1;
+  bool email_confirmed = 2;
+}
+
+message ChangeEmailConfirmStatusReply {
+  bool succeeded = 1;
+  bool email_confirmed = 2;
+  string email = 3;
+  string user_id = 4;
+}
+
+// ── Authenticate ───────────────────────────────────────────────────
+message AuthenticateRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message AuthenticateReply {
+  bool succeeded = 1;
+  bool authenticated = 2;
+  string email = 3;
+  string user_id = 4;
+  string first_name = 5;
+  string last_name = 6;
+}
+
+// ── SignUp ─────────────────────────────────────────────────────────
+message SignUpRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message SignUpReply {
+  bool succeeded = 1;
+  bool authenticated = 2;
+  string email = 3;
+  string user_id = 4;
+  string first_name = 5;
+  string last_name = 6;
+}
+
+// ── GetRoles ───────────────────────────────────────────────────────
+message GetRolesRequest {
+  string user_id = 1;
+}
+
+message GetRolesReply {
+  bool succeeded = 1;
+  repeated string roles = 2;
+}
+
+// ── GetUser ────────────────────────────────────────────────────────
+message GetUserRequest {
+  string user_id = 1;
+}
+
+message GetUserReply {
+  bool succeeded = 1;
+  string user_id = 2;
+  string email = 3;
+  string first_name = 4;
+  string last_name = 5;
+  string phone_number = 6;
+  string description = 7;
+  string profile_picture_url = 8;
+  string created_at = 9;
+  bool email_confirmed = 10;
+  repeated string roles = 11;
+  string error = 12;
+}
+
+// ── UpdateUser ─────────────────────────────────────────────────────
+message UpdateUserRequest {
+  string user_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
+  string phone_number = 5;
+  string description = 6;
+  string profile_picture_url = 7;
+}
+
+message UpdateUserReply {
+  bool succeeded = 1;
+  string user_id = 2;
+  string email = 3;
+  string first_name = 4;
+  string last_name = 5;
+  string phone_number = 6;
+  string description = 7;
+  string profile_picture_url = 8;
+  string error = 9;
+}
+
+// ── DeleteUser ─────────────────────────────────────────────────────
+message DeleteUserRequest {
+  string user_id = 1;
+}
+
+message DeleteUserReply {
+  bool succeeded = 1;
+  string error = 2;
+}
