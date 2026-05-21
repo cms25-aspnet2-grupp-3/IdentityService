@@ -45,4 +45,5 @@ app.MapGrpcService<IdentityGrpcService>();
 // Simple health check — lets Azure know the service is alive
 app.MapGet("/", () => "Identity-Service is running. gRPC only.");
 
+app.UseHttpsRedirection();
 app.Run();

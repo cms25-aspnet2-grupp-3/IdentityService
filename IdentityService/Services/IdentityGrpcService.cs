@@ -19,11 +19,11 @@ namespace IdentityService.Services
 
         public IdentityGrpcService(
             AppDbContext db,
-            ServiceBusPublisher publisher,
+            //ServiceBusPublisher publisher,
             ILogger<IdentityGrpcService> logger)
         {
             _db = db;
-            _publisher = publisher;
+            //_publisher = publisher;
             _logger = logger;
         }
 
