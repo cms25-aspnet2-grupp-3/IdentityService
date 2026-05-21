@@ -6,7 +6,7 @@ package identity;
 
 service IdentityGrpcService {
 
-  // ── Auth-Api calls these (matches teammate's proto exactly) ───────
+  // ── Auth-Api ──────────────────────────────────────────────────────
 
   // Check if a user exists and if their email is confirmed
   rpc CheckEmailConfirmStatus (CheckEmailConfirmStatusRequest) returns (CheckEmailConfirmStatusReply);
@@ -23,7 +23,7 @@ service IdentityGrpcService {
   // Get the roles assigned to a user
   rpc GetRoles (GetRolesRequest) returns (GetRolesReply);
 
-  // ── Profile-Api calls these ────────────────────────────────────────
+  // ── Profile-Api ───────────────────────────────────────────────────
 
   // Get full user profile by ID
   rpc GetUser (GetUserRequest) returns (GetUserReply);
