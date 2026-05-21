@@ -1,38 +1,31 @@
-using Azure.Messaging.ServiceBus;
 using IdentityService.Data;
-using IdentityService.Messaging;
 using IdentityService.Services;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ──────────────────────────────────────────────
-// Database
-// ──────────────────────────────────────────────
+// ── Kestrel — must be before builder.Build() ──
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(8080, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http2;
+    });
+});
+
+// ── Database ──
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// ──────────────────────────────────────────────
-// Azure Service Bus
-// ──────────────────────────────────────────────
-// builder.Services.AddSingleton(_ =>
-//     new ServiceBusClient(builder.Configuration.GetConnectionString("ServiceBus")));
-// builder.Services.AddScoped<ServiceBusPublisher>();
-
-// ──────────────────────────────────────────────
-// gRPC
-// ──────────────────────────────────────────────
+// ── gRPC ──
 builder.Services.AddGrpc(options =>
 {
     options.EnableDetailedErrors = builder.Environment.IsDevelopment();
 });
 
-// ──────────────────────────────────────────────
-// Build & Middleware
-// ──────────────────────────────────────────────
 var app = builder.Build();
 
-// Auto-apply migrations and seed roles in dev
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
@@ -41,9 +34,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapGrpcService<IdentityGrpcService>();
-
-// Simple health check — lets Azure know the service is alive
 app.MapGet("/", () => "Identity-Service is running. gRPC only.");
 
-app.UseHttpsRedirection();
+// Remove app.UseHttpsRedirection() — not needed for container
+
 app.Run();
