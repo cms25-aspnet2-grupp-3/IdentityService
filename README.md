@@ -91,7 +91,7 @@ git clone https://github.com/cms25-aspnet2-grupp-3/IdentityService
 
 ### 2. Configure appsettings
 
-Copy `appsettings.example.json` to `appsettings.json` and fill in:
+Add `appsettings.json` and fill in:
 
 ```json
 {
